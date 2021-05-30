@@ -134,3 +134,37 @@ FILTRAMOS LA BASE DE DATOS PARA VER SOLO LOS PAISES DE AMERICA LATINA
 Mortalidad_LATAM <- Mort_Prueba %>% filter(Pais %in% c("Argentina", "Brazil", "Chile", "Uruguay","Venezuela (Bolivarian Republic of)", "Ecuador", "Colombia", "Paraguay", "Peru", "	
 Bolivia (Plurinational State of)"))
 ```
+
+Mapa del mundo pero que no asocia bien la tasa de cada uno de los países
+```{r}
+M2018 <- Mort_Prueba %>% filter(years==2018) %>% mutate(Media=round(Media,2))
+
+hcmap(
+  "custom/world-robinson-lowres", 
+  data = M2018,
+  name = "Pais", 
+  value = "Media",
+  borderWidth = 0,
+  nullColor = "#d3d3d3") %>%
+  hc_colorAxis(
+    stops = color_stops(colors = viridisLite::inferno(10, begin = 0.1)),
+    type = "logarithmic"
+    )
+```
+Lo mismo pero para LATAM
+```{r}
+mapa_sudaca <- Mortalidad_LATAM %>% filter(years==1998) %>% mutate(Media=round(Media,2))
+
+hcmap(
+  "custom/south-america", 
+  data = mapa_sudaca,
+  name = "Pais", 
+  value = "Media",
+  borderWidth = 0,
+  nullColor = "#d3d3d3") %>%
+  hc_colorAxis(
+    stops = color_stops(colors = viridisLite::inferno(10, begin = 0.1)),
+    type = "logarithmic"
+    )
+
+```
