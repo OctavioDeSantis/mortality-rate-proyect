@@ -137,7 +137,7 @@ Bolivia (Plurinational State of)"))
 
 Mapa del mundo pero que no asocia bien la tasa de cada uno de los países
 ```{r}
-M2018 <- Mort_Prueba %>% filter(years==2018) %>% mutate(Media=round(Media,2))
+M2018 <- Mort_Prueba %>% filter(years==2018) %>% mutate(Media=round(Media,2)) %>% rename("iso-a3"=ISO.Code)
 
 hcmap(
   "custom/world-robinson-lowres", 
@@ -145,11 +145,13 @@ hcmap(
   name = "Pais", 
   value = "Media",
   borderWidth = 0,
-  nullColor = "#d3d3d3") %>%
+  nullColor = "#d3d3d3",
+  joinBy = c("iso-a3","iso-a3")) %>%
   hc_colorAxis(
-    stops = color_stops(colors = viridisLite::inferno(10, begin = 0.1)),
+    stops = color_stops(colors = viridisLite::inferno(10, begin = 0.1,direction = -1)),
     type = "logarithmic"
     )
+    
 ```
 Lo mismo pero para LATAM
 ```{r}
@@ -175,10 +177,7 @@ Mortalidad_LATAM <- Mort_Prueba %>% filter(Pais %in% c("Argentina", "Brazil", "C
 
 y hacer el mapa cambiando los nombres de bolivia y venezuela
 ```{r}
-mapa_sudaca <- Mortalidad_LATAM %>% filter(years==1998) %>% mutate(Media=round(Media,2))
-
-mapa_sudaca[10,2] = "Venezuela"
-mapa_sudaca[2,2] = "Bolivia"
+mapa_sudaca <- Mortalidad_LATAM %>% filter(years==1998) %>% mutate(Media=round(Media,2)) %>% rename("iso-a3"=ISO.Code)
 
 hcmap(
   "custom/south-america", 
@@ -187,9 +186,10 @@ hcmap(
   value = "Media",
   borderWidth = 0,
   nullColor = "#d3d3d3",
-  joinBy = c("name","Pais")) %>%
+  joinBy = c("iso-a3","iso-a3")) %>%
   hc_colorAxis(
-    stops = color_stops(colors = viridisLite::inferno(100, begin = 0.1)),
+    stops = color_stops(colors = viridisLite::inferno(10, begin = 0.1,direction = -1)),
     type = "logarithmic"
     )
+
 ```
