@@ -168,3 +168,28 @@ hcmap(
     )
 
 ```
+
+entonces para arreglarlo: 
+Nombrar bien los países:
+Mortalidad_LATAM <- Mort_Prueba %>% filter(Pais %in% c("Argentina", "Brazil", "Chile", "Uruguay","Venezuela (Bolivarian Republic of)", "Ecuador", "Colombia", "Paraguay", "Peru", "Bolivia (Plurinational State of)"))
+
+y hacer el mapa cambiando los nombres de bolivia y venezuela
+```{r}
+mapa_sudaca <- Mortalidad_LATAM %>% filter(years==1998) %>% mutate(Media=round(Media,2))
+
+mapa_sudaca[10,2] = "Venezuela"
+mapa_sudaca[2,2] = "Bolivia"
+
+hcmap(
+  "custom/south-america", 
+  data = mapa_sudaca,
+  name = "Pais", 
+  value = "Media",
+  borderWidth = 0,
+  nullColor = "#d3d3d3",
+  joinBy = c("name","Pais")) %>%
+  hc_colorAxis(
+    stops = color_stops(colors = viridisLite::inferno(100, begin = 0.1)),
+    type = "logarithmic"
+    )
+```
