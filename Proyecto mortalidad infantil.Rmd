@@ -107,13 +107,12 @@ ggplotly(Mort_graf)
 
 ```
 
-
-
+FILTRAMOS LA BASE DE DATOS PARA 1990
 
 ```{r}
 Mortalidad_1990 <- select(Mortalidad_5a9_xpais_Filtrada, 1:3)
 ```
-
+FILTRAMOS LA BASE DE DATOS PARA 1993
 ```{r}
 Mortalidad_1993 <- Mort_Prueba %>%
   filter(years == "1993")
