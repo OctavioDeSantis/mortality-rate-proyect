@@ -1,0 +1,130 @@
+---
+title: "Mortalidad infantil base de datos UNICEF"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+IMPORTO BASE DE DATOS
+
+```{r}
+#descargo la base de datos de UNICEF
+#Luego la importo de la sigueinte manera
+
+Mortalidad_5a9_xpais <- read_excel("Mortality-rate-among-children-and-you-age-5-to-24_2020.xlsx", 
+    sheet = "Age 5to9 Country estimates", 
+    range = "A15:AG600")
+```
+
+CARGO LIBRERIAS
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(datasets)
+library(plotly)
+```
+
+VEO SI DEBO HACER CAMBIOS EN LA BASE DE DATOS
+
+```{r}
+summary(Mortalidad_5a9_xpais)
+
+#Veo que los años tienen .5 al final asi que intento cambiarlo
+names(Mortalidad_5a9_xpais)
+names(Mortalidad_5a9_xpais) = c ("ISO.Code", "Pais","Uncertainty.Bounds","1990","1991","1992","1993","1994","1995","1996","1997","1998","1999","2000","2001","2002","2003", "2004","2005","2006","2007"         ,"2008" ,"2009","2010","2011","2012","2013","2014","2015","2016","2017","2018"    ,"2019")
+
+view(Mortalidad_5a9_xpais)
+```
+
+AHORA PROBAMOS DEJAR LIMPIA Y ACOMODADA LA BASE DE DATOS
+
+```{r}
+#Como la base de datos nos aportaba los datos de la minima, media y maximo buscamos filtrar la base de datos por por el promedio de la mortalidad asi es mas confiable a la hora de analizar los datos. 
+
+Mortalidad_5a9_xpais_Filtrada <-filter(Mortalidad_5a9_xpais, Uncertainty.Bounds == "Median")
+
+#La ponemos en una nueva base de datos ya filtrada. Podemos borrar la variable "Uncertainly.Bounds" ya que solo tiene la observacion "median" puede ser dedundante
+Mortalidad_5a9_xpais_Filtrada <- select(Mortalidad_5a9_xpais_Filtrada, !Uncertainty.Bounds)
+
+#Intento reagrupar la base de datos creando un nueva variable que se llame años y este compuesta de todos los años
+
+Mort_Prueba <-gather(data=Mortalidad_5a9_xpais_Filtrada ,key = "years", value = "Media",3:32)
+
+
+```
+
+PARA UNA MEJOR VISUALIZACION VAMOS A REPRESENTAR LOS DATOS DE LA TABLA EN UN GRAFICO
+
+```{r}
+#En primer lugar vamos a realizar un grafico de barras sobre un unico pais, por ejemplo Argentina
+#Para eso filtramos la base de datos en los datos de Argentina
+
+Mortalidad_Argentina <- Mort_Prueba %>% 
+  filter(Pais == "Argentina")
+
+
+#Ahora vamos agraficar la tasa de mortalidad para la base de datos "Mortalidad_Argentina"
+
+argentina_graf <- ggplot()+
+  geom_bar(data = Mortalidad_Argentina, mapping = aes(x = years, y = Media, fill = Pais), stat = "identity" ) + 
+  
+  labs(title = "Tasa de mortalidad Argentina",
+       subtitle = "1990-2019",
+       x = "Años",
+       y = "Media",
+       caption = "Fuente UNICEF") + 
+  
+  scale_color_brewer(palette = "Pastel1")
+
+#Lo animamos con la funcion plotly()
+
+ggplotly(argentina_graf)
+
+#Con plotly perdemos algunas leyendas como por ejemplo la de caption.
+
+#Vamos a probar la media por todos los paises
+
+Mort_graf <- ggplot()+
+  geom_bar(data = Mort_Prueba, mapping = aes(x = years, y = Media, fill = Pais), stat = "identity" ) + 
+  
+  labs(title = "Tasa de mortalidad Mundial",
+       subtitle = "1990-2019",
+       x = "Años",
+       y = "Media",
+       caption = "Fuente UNICEF") + 
+  facet_wrap(~Pais)
+  
+  scale_color_brewer(palette = "Pastel1")
+
+ggplotly(Mort_graf)
+
+#Se ve mal gg
+
+```
+
