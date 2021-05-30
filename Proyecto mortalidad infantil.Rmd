@@ -118,3 +118,19 @@ Mortalidad_1993 <- Mort_Prueba %>%
   filter(years == "1993")
 ```
 
+OBSERVAMOS EN UN AÑO ENTRE PAISES
+
+```{r}
+Gra_point <-
+  ggplot()+
+  geom_point(Mortalidad_1993,mapping =  aes(y= Media, x= Pais), stat = "identity")
+
+ggplotly(Gra_point)
+```
+
+FILTRAMOS LA BASE DE DATOS PARA VER SOLO LOS PAISES DE AMERICA LATINA
+
+```{r}
+Mortalidad_LATAM <- Mort_Prueba %>% filter(Pais %in% c("Argentina", "Brazil", "Chile", "Uruguay","Venezuela (Bolivarian Republic of)", "Ecuador", "Colombia", "Paraguay", "Peru", "	
+Bolivia (Plurinational State of)"))
+```
