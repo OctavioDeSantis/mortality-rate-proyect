@@ -1,3 +1,5 @@
 Vamos a utlizar la base de datos de UNICEF que alberga la tasa de mortalidad de niños, adolescentes y jovenes
 En el siguiente paso subiremos un scrip para Rstudio que permite observar como manipulamos esta amplia base de datos acotandola para niños de 5 a 9 años
 ademas utilizamos solo la media por cada pais. 
+
+En proyecto mortalidad infantil.rdm se pueden ver los avances 
