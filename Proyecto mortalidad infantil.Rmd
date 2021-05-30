@@ -54,7 +54,7 @@ Mortalidad_5a9_xpais_Filtrada <- select(Mortalidad_5a9_xpais_Filtrada, !Uncertai
 
 Mort_Prueba <-gather(data=Mortalidad_5a9_xpais_Filtrada ,key = "years", value = "Media",3:32)
 
-
+Mort_Prueba$years <- as.Date(Mort_Prueba$years,format = "%Y")
 ```
 
 PARA UNA MEJOR VISUALIZACION VAMOS A REPRESENTAR LOS DATOS DE LA TABLA EN UN GRAFICO
